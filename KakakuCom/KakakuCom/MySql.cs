@@ -256,34 +256,6 @@ namespace Db
 			return 0;
 		}
 
-		//// レコード追加修正
-		//public static int updtRecord(
-		//	string i_strTableName,				// テーブル名
-		//	string[] i_strItem,					// 項目
-		//	int i_nHdr							// 項目数
-		//	)
-		//{
-		//	string strSql;
-		//	int nRet;
-		//	try
-		//	{
-		//		strSql = "UPDATE " + i_strTableName + " VALUES(\"" + i_strItem[0];
-		//		for (int j = 1; j < i_nHdr; j++)
-		//		{
-		//			strSql += ("\",\"" + i_strItem[j]);
-		//		}
-		//		strSql += "\")";
-		//		MySqlCommand command = new MySqlCommand(strSql, m_dbConn);
-		//		nRet = command.ExecuteNonQuery();
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		Dbg.Utl.MessageBoxShow(ex.Message, "DB レコード追加 エラー");
-		//		return -1;
-		//	}
-		//	return 0;
-		//}
-
 		// レコード追加修正
 		public static int repRecord(
 			string i_strTableName,				// テーブル名
@@ -388,20 +360,24 @@ namespace Db
 			return 0;
 		}
 
-		// テーブルの条件が合致した複数行の指定項目データを取得
-		// 項目データバッファの配列サイズが読み込みの最大行数
-		// 条件==""の場合は全行読み込み
-		// ソート条件に従った順に並べて出力
-		public static int getTableItems(
-			string i_strTbl,					// テーブル名
-			string[] i_strHdr,					// 出力項目名
-			int i_nHdr,							// 出力項目数
-			string i_strCondw,					// 条件(WHERE)		例 "ID=XX" 
-			string i_strCondo,					// ソート条件(ORDER BY)  例 "ID"			IDでソート
-												//							"ID1, ID2 des"	ID1でソートを行い同一値ならID2で逆順にソート
-			string[,] o_strItems,				// 項目データバッファ
-			out int o_nRow						// 読み込み行数
-			)
+
+		/// <summary>
+		/// テーブルの条件が合致した複数行の指定項目データを取得
+		/// 項目データバッファの配列サイズが読み込みの最大行数
+		/// 条件==""の場合は全行読み込み
+		/// ソート条件に従った順に並べて出力
+		/// </summary>
+		/// <param name="i_strTbl">テーブル名</param>
+		/// <param name="i_strHdr">出力項目名</param>
+		/// <param name="i_nHdr">出力項目数</param>
+		/// <param name="i_strCondw">条件(WHERE)		例 "ID=XX"</param>
+		/// <param name="i_strCondo">ソート条件(ORDER BY)  例 "ID"			IDでソート</param>
+		/// 							"ID1, ID2 des"	ID1でソートを行い同一値ならID2で逆順にソート
+		/// <param name="o_strItems">項目データバッファ</param>
+		/// <param name="o_nRow">読み込み行数</param>
+		/// <returns>ステイタス(0)</returns>
+		public static int getTableItems( string i_strTbl, string[] i_strHdr, int i_nHdr,
+			string i_strCondw, string i_strCondo, string[,] o_strItems, out int o_nRow )
 		{
 			string sql;
 			MySqlCommand cmd;
@@ -453,18 +429,22 @@ namespace Db
 			return 0;
 		}
 
-		// ログテーブルの条件が合致した複数行の指定項目データを取得
-		// 条件==""の場合は全行の指定項目
-		// ソート条件に従った順に並べて出力
-		public static int getLogTableItems(
-			string i_strTbl,					// テーブル名
-			string[] i_strHdr,					// 出力項目名
-			int i_nHdr,							// 出力項目数
-			string i_strCondw,					// 条件(where)		例 "ID=XX" 
-			string i_strCondo,					// 条件(order by)	例 "ID"  | "ID1, ID2 des" (ID1でソートを行い同一値ならID2で逆順にソート)
-			string[,] o_strItems,				// 項目データ
-			out int o_nRow						// 行数
-			)
+
+		/// <summary>
+		/// ログテーブルの条件が合致した複数行の指定項目データを取得
+		/// 条件==""の場合は全行の指定項目
+		/// ソート条件に従った順に並べて出力
+		/// </summary>
+		/// <param name="i_strTbl">テーブル名</param>
+		/// <param name="i_strHdr">出力項目名</param>
+		/// <param name="i_nHdr">出力項目数</param>
+		/// <param name="i_strCondw">条件(where)		例 "ID=XX"</param>
+		/// <param name="i_strCondo">条件(order by)	例 "ID"  | "ID1, ID2 des" (ID1でソートを行い同一値ならID2で逆順にソート)</param>
+		/// <param name="o_strItems">項目データ</param>
+		/// <param name="o_nRow">行数</param>
+		/// <returns>ステイタス(0)</returns>
+		public static int getLogTableItems(	string i_strTbl, string[] i_strHdr, int i_nHdr, 
+			string i_strCondw, string i_strCondo, string[,] o_strItems,	out int o_nRow )
 		{
 			string sql;
 			MySqlCommand cmd;
@@ -535,14 +515,16 @@ namespace Db
 			return 0;
 		}
 
-		// テーブルの条件が合致した行の指定項目データを取得 
-		public static bool getRecordItems(		// ステイタス	(true:データ有り, false:データなし)
-			string i_strTbl,					// テーブル名
-			string[] i_strHdr,					// 出力項目名
-			int i_nHdr,							// 出力項目数
-			string i_strCond,					// 検索条件(where)	例 "ID=XX" 
-			string[] o_strItems					// 項目データ
-			)
+		/// <summary>
+		/// テーブルの条件が合致した行の指定項目データを取得
+		/// </summary>
+		/// <param name="i_strTbl">テーブル名</param>
+		/// <param name="i_strHdr">出力項目名</param>
+		/// <param name="i_nHdr">出力項目数</param>
+		/// <param name="i_strCond">検索条件(where)	例 "ID=XX"</param>
+		/// <param name="o_strItems">項目データ</param>
+		/// <returns>ステイタス	(true:データ有り, false:データなし)</returns>
+		public static bool getRecordItems( string i_strTbl,	string[] i_strHdr, int i_nHdr, string i_strCond, string[] o_strItems )
 		{
 			bool bSt;
 			string sql;
@@ -587,19 +569,24 @@ namespace Db
 			return bSt;
 		}
 
-		// テーブルの最大2つの条件が合致した複数行の指定項目データを変更
-		public static int modifyMultiCondTableItems2D(
-			string i_strTbl,					// テーブル名
-			string[] i_strHdr,					// 項目名
-			int i_nHdr,							// 項目数
-			// 条件 = 条件1 + 条件2
-			string i_strCond11,					// 条件1(where)	固定部		(例 "ID=")
-			string[] i_strCond12s,				// 条件2(where)	行選択部	(例 "XX1" ～ "XXn") または (例 "ID=XX1" ～ "ID=XXn")
-			string i_strCond21,					// 条件1(where)	固定部		(例 "ID=")			または (例 "": 条件が一つの場合)
-			string[] i_strCond22s,				// 条件2(where)	行選択部	(例 "XX1" ～ "XXn") または (例 "ID=XX1" ～ "ID=XXn")
-			string[,] i_strItems,				// 項目データ
-			int i_nRow							// 行数
-			)
+		/// <summary>
+		/// テーブルの最大2つの条件が合致した複数行の指定項目データを変更する
+		///		sql = "UPDATE table hdr1=data1,hdr2=data2,hdr3=data3,･･･ where key1 = "a001";
+		/// </summary>
+		/// <param name="i_strTbl">テーブル名</param>
+		/// <param name="i_strHdr">項目名</param>
+		/// <param name="i_nHdr">項目数</param>
+		/// 	条件 = 条件1 + 条件2
+		/// <param name="i_strCond11">条件1(where)	固定部		(例 "ID=")</param>
+		/// <param name="i_strCond12s">条件2(where)	行選択部	(例 "XX1" ～ "XXn") または (例 "ID=XX1" ～ "ID=XXn")</param>
+		/// <param name="i_strCond21">条件1(where)	固定部		(例 "ID=")			または (例 "": 条件が一つの場合)</param>
+		/// <param name="i_strCond22s">条件2(where)	行選択部	(例 "XX1" ～ "XXn") または (例 "ID=XX1" ～ "ID=XXn")</param>
+		/// <param name="i_strItems">項目データ</param>
+		/// <param name="i_nRow">行数</param>
+		/// <returns>ステイタス(0)</returns>
+		public static int modifyMultiCondTableItems2D( string i_strTbl, string[] i_strHdr, int i_nHdr,
+			string i_strCond11, string[] i_strCond12s,
+			string i_strCond21, string[] i_strCond22s, string[,] i_strItems, int i_nRow )
 		{
 			string sql;
 			// sql = "UPDATE table hdr1=data1,hdr2=data2,hdr3=data3,･･･ where key1 = "a001";
@@ -629,20 +616,24 @@ namespace Db
 			return 0;
 		}
 
-		// テーブルの最大2つの条件が合致した行の指定項目データを変更
-		// 2次元配列の項目データの指定行の値に変更
-		public static int modifyMultiCondRecordItems2D(
-			string i_strTbl,					// テーブル名
-			string[] i_strHdr,					// 項目名
-			int i_nHdr,							// 項目数
-			// 条件 = 条件1 + 条件2
-			string i_strCond11,					// 条件1(where)	固定部		(例 "ID=")
-			string i_strCond12s,				// 条件2(where)	行選択部	(例 "XX1" ～ "XXn") または (例 "ID=XX1" ～ "ID=XXn")
-			string i_strCond21,					// 条件1(where)	固定部		(例 "ID=")			または (例 "": 条件が一つの場合)
-			string i_strCond22s,				// 条件2(where)	行選択部	(例 "XX1" ～ "XXn") または (例 "ID=XX1" ～ "ID=XXn")
-			string[,] i_strItems,				// 複数行の項目データ
-			int i_iItemn						// 修正する項目データの行番号
-			)
+		/// <summary>
+		/// テーブルの最大2つの条件が合致した行の指定項目データを変更
+		/// 2次元配列の項目データの指定行の値に変更
+		/// </summary>
+		/// <param name="i_strTbl">テーブル名</param>
+		/// <param name="i_strHdr">項目名</param>
+		/// <param name="i_nHdr">項目数</param>
+		/// 条件 = 条件1 + 条件2
+		/// <param name="i_strCond11">条件1(where)	固定部		(例 "ID=")</param>
+		/// <param name="i_strCond12s">条件2(where)	行選択部	(例 "XX1" ～ "XXn") または (例 "ID=XX1" ～ "ID=XXn")</param>
+		/// <param name="i_strCond21">条件1(where)	固定部		(例 "ID=")			または (例 "": 条件が一つの場合)</param>
+		/// <param name="i_strCond22s">条件2(where)	行選択部	(例 "XX1" ～ "XXn") または (例 "ID=XX1" ～ "ID=XXn")</param>
+		/// <param name="i_strItems">複数行の項目データ</param>
+		/// <param name="i_iItemn">修正する項目データの行番号</param>
+		/// <returns>ステイタス(0)</returns>
+		public static int modifyMultiCondRecordItems2D(	string i_strTbl, string[] i_strHdr,	int i_nHdr,
+			string i_strCond11, string i_strCond12s, 
+			string i_strCond21, string i_strCond22s, string[,] i_strItems, int i_iItemn )
 		{
 			string sql;
 			// sql = "UPDATE table hdr1=data1,hdr2=data2,hdr3=data3,･･･ where key1 = "a001";
@@ -669,16 +660,17 @@ namespace Db
 			return 0;
 		}
 
-		// テーブルの条件が合致した行の指定項目データを
-		// 2次元配列の項目データの指定行の値に変更
-		public static int modifySingleCondRecordItems2D(
-			string i_strTbl,					// テーブル名
-			string[] i_strHdr,					// 項目名
-			int i_nHdr,							// 項目数
-			string i_strConds,					// 条件(where)	例 "ID=XX" 
-			string[,] i_strItems,				// 複数行の項目データ(2次元配列)
-			int i_iItemn						// 修正する項目データの行番号
-			)
+		/// <summary>
+		/// テーブルの条件が合致した行の指定項目データを 2次元配列の項目データの指定行の値に変更
+		/// </summary>
+		/// <param name="i_strTbl">テーブル名</param>
+		/// <param name="i_strHdr">項目名</param>
+		/// <param name="i_nHdr">項目数</param>
+		/// <param name="i_strConds">条件(where)	例 "ID=XX"</param>
+		/// <param name="i_strItems">複数行の項目データ(2次元配列)</param>
+		/// <param name="i_iItemn">修正する項目データの行番号</param>
+		/// <returns>ステイタス(0)</returns>
+		public static int modifySingleCondRecordItems2D( string i_strTbl, string[] i_strHdr, int i_nHdr, string i_strConds, string[,] i_strItems, int i_iItemn )
 		{
 			string sql;
 			// sql = "UPDATE table hdr1=data1,hdr2=data2,hdr3=data3,･･･ where key1 = "a001";
@@ -701,14 +693,16 @@ namespace Db
 			return 0;
 		}
 
-		// テーブルの条件が合致した行の指定項目データを変更
-		public static int modifySingleCondRecordItems1D(
-			string i_strTbl,					// テーブル名
-			string[] i_strHdr,					// 項目名
-			int i_nHdr,							// 項目数
-			string i_strConds,					// 条件(where)	例 "ID=XX" 
-			string[] i_strItems					// 項目データ(1次元配列)
-			)
+		/// <summary>
+		/// テーブルの条件が合致した行の指定項目データを変更
+		/// </summary>
+		/// <param name="i_strTbl">テーブル名</param>
+		/// <param name="i_strHdr">項目名</param>
+		/// <param name="i_nHdr">項目数</param>
+		/// <param name="i_strConds">条件(where)	例 "ID=XX"</param>
+		/// <param name="i_strItems">項目データ(1次元配列)</param>
+		/// <returns>ステイタス(0)</returns>
+		public static int modifySingleCondRecordItems1D( string i_strTbl, string[] i_strHdr, int i_nHdr, string i_strConds, string[] i_strItems )
 		{
 			string sql;
 			// sql = "UPDATE table hdr1=data1,hdr2=data2,hdr3=data3,･･･ where key1 = "a001";
@@ -731,139 +725,139 @@ namespace Db
 			return 0;
 		}
 
-		public static void changeURL()
-		{
-			string[] strHdr = { "商品ID", "属性ID", "図形CD"};
-			string[,] strItems = new string[1000000, 3];
-			int nZukei;													// 小分類数
-			Db.MySql.getTableItems(Kc.Const.z_strAttributeURL2Table, strHdr, 3, "", "", strItems, out nZukei);
+		//public static void changeURL()
+		//{
+		//	string[] strHdr = { "商品ID", "属性ID", "図形CD"};
+		//	string[,] strItems = new string[1000000, 3];
+		//	int nZukei;													// 小分類数
+		//	Db.MySql.getTableItems(Kc.Const.z_strAttributeURL2Table, strHdr, 3, "", "", strItems, out nZukei);
 
-			for (int ic = 0; ic < nZukei; ic++)
-			{
-				if (String.IsNullOrEmpty(strItems[ic,2]) == false)
-				{
-					if (strItems[ic, 2][0] == 'z')
-					{
-						continue;
-					}
-					// sql = "UPDATE table hdr1=data1,hdr2=data2,hdr3=data3,･･･ where key1 = "a001";
-					string strValue = "Z0" + strItems[ic,2];
-					string sql = "UPDATE " + Kc.Const.z_strAttributeURL2Table + " SET 図形CD=\"" + strValue +"\" WHERE 商品ID=\"" + 
-								 strItems[ic,0] + "\" AND 属性ID=\"" + strItems[ic,1] + "\"";
-					try
-					{
-						MySqlCommand cmd1 = new MySqlCommand(sql, m_dbConn);
-						cmd1.ExecuteNonQuery();
-					}
-					catch (Exception ex)
-					{
-						Dbg.Utl.MessageBoxShow(ex.Message, "DB データ修正 エラー");
-					}
-				}
-			}
-		}
+		//	for (int ic = 0; ic < nZukei; ic++)
+		//	{
+		//		if (String.IsNullOrEmpty(strItems[ic,2]) == false)
+		//		{
+		//			if (strItems[ic, 2][0] == 'z')
+		//			{
+		//				continue;
+		//			}
+		//			// sql = "UPDATE table hdr1=data1,hdr2=data2,hdr3=data3,･･･ where key1 = "a001";
+		//			string strValue = "Z0" + strItems[ic,2];
+		//			string sql = "UPDATE " + Kc.Const.z_strAttributeURL2Table + " SET 図形CD=\"" + strValue +"\" WHERE 商品ID=\"" + 
+		//						 strItems[ic,0] + "\" AND 属性ID=\"" + strItems[ic,1] + "\"";
+		//			try
+		//			{
+		//				MySqlCommand cmd1 = new MySqlCommand(sql, m_dbConn);
+		//				cmd1.ExecuteNonQuery();
+		//			}
+		//			catch (Exception ex)
+		//			{
+		//				Dbg.Utl.MessageBoxShow(ex.Message, "DB データ修正 エラー");
+		//			}
+		//		}
+		//	}
+		//}
 
-		// Temp 2
-		public static void checkURL()
-		{
-			string[] strHdr = { "商品ID", "属性ID", "図形CD" };
-			string[,] strItems = new string[1000000, 3];
-			int nZukei;											// 小分類数
-			Db.MySql.getTableItems(Kc.Const.z_strAttributeURL2Table, strHdr, 3, "", "", strItems, out nZukei);
+//		// Temp 2
+//		public static void checkURL()
+//		{
+//			string[] strHdr = { "商品ID", "属性ID", "図形CD" };
+//			string[,] strItems = new string[1000000, 3];
+//			int nZukei;											// 小分類数
+//			Db.MySql.getTableItems(Kc.Const.z_strAttributeURL2Table, strHdr, 3, "", "", strItems, out nZukei);
 
-			for (int ic = 0; ic < nZukei; ic++)
-			{
-				if (String.IsNullOrEmpty(strItems[ic, 2]))
-				{
-					continue;
-				}
-				string strZukeiCD = strItems[ic, 2];
-				int nClm = strItems[ic, 2].Length;
-				if (nClm != 15)
-				{
-//					int iStop = 1;								// デバッグ用 //F2
-				}
-/*
-				if (strItems[ic, 2][0] == 'z')
-				{
-					continue;
-				}
-				// sql = "UPDATE table hdr1=data1,hdr2=data2,hdr3=data3,･･･ where key1 = "a001";
-				string strValue = "Z0" + strItems[ic, 2];
-				string sql = "UPDATE " + Kc.Const.z_strAttributeURLTable + " SET 図形CD=\"" + strValue + "\" WHERE 商品ID=\"" +
-								strItems[ic, 0] + "\" AND 属性ID=\"" + strItems[ic, 1] + "\"";
-				try
-				{
-					MySqlCommand cmd1 = new MySqlCommand(sql, m_dbConn);
-					cmd1.ExecuteNonQuery();
-				}
-				catch (Exception ex)
-				{
-					Dbg.Utl.MessageBoxShow(ex.Message, "DB データ修正 エラー");
-				}
- */ 
-			}
-		}
+//			for (int ic = 0; ic < nZukei; ic++)
+//			{
+//				if (String.IsNullOrEmpty(strItems[ic, 2]))
+//				{
+//					continue;
+//				}
+//				string strZukeiCD = strItems[ic, 2];
+//				int nClm = strItems[ic, 2].Length;
+//				if (nClm != 15)
+//				{
+////					int iStop = 1;								// デバッグ用 //F2
+//				}
+///*
+//				if (strItems[ic, 2][0] == 'z')
+//				{
+//					continue;
+//				}
+//				// sql = "UPDATE table hdr1=data1,hdr2=data2,hdr3=data3,･･･ where key1 = "a001";
+//				string strValue = "Z0" + strItems[ic, 2];
+//				string sql = "UPDATE " + Kc.Const.z_strAttributeURLTable + " SET 図形CD=\"" + strValue + "\" WHERE 商品ID=\"" +
+//								strItems[ic, 0] + "\" AND 属性ID=\"" + strItems[ic, 1] + "\"";
+//				try
+//				{
+//					MySqlCommand cmd1 = new MySqlCommand(sql, m_dbConn);
+//					cmd1.ExecuteNonQuery();
+//				}
+//				catch (Exception ex)
+//				{
+//					Dbg.Utl.MessageBoxShow(ex.Message, "DB データ修正 エラー");
+//				}
+// */ 
+//			}
+//		}
 
-		// DB項目の最大値を取得 
-		// 最大値の取得が出来ず中断
-		public static bool getMaxValue(			// ステイタス	(true:データ有り, false:データなし)
-			string i_strTbl,					// テーブル名
-			string i_strHdr,					// 項目名
-			string i_strCond,					// 条件(where)	例 "ID=XX" 
-			out string o_strItems				// 最大値
-			)
-		{
-			bool bSt;
-			string sql;
-			MySqlCommand cmd;
-			MySqlDataReader rdr;
-			o_strItems = "0";
+		//// DB項目の最大値を取得 
+		//// 最大値の取得が出来ず中断
+		//public static bool getMaxValue(			// ステイタス	(true:データ有り, false:データなし)
+		//	string i_strTbl,					// テーブル名
+		//	string i_strHdr,					// 項目名
+		//	string i_strCond,					// 条件(where)	例 "ID=XX" 
+		//	out string o_strItems				// 最大値
+		//	)
+		//{
+		//	bool bSt;
+		//	string sql;
+		//	MySqlCommand cmd;
+		//	MySqlDataReader rdr;
+		//	o_strItems = "0";
 
-			// sql = "SELECT hdr1,hdr2,hdr3,･･･ from table";
-			sql = "SELECT 商品ID,MAX('" + i_strHdr + "') as MaxID";
-			sql += (" FROM " + i_strTbl + " WHERE " + i_strCond);
-			try
-			{
-				cmd = new MySqlCommand(sql, m_dbConn);
-				rdr = cmd.ExecuteReader();
+		//	// sql = "SELECT hdr1,hdr2,hdr3,･･･ from table";
+		//	sql = "SELECT 商品ID,MAX('" + i_strHdr + "') as MaxID";
+		//	sql += (" FROM " + i_strTbl + " WHERE " + i_strCond);
+		//	try
+		//	{
+		//		cmd = new MySqlCommand(sql, m_dbConn);
+		//		rdr = cmd.ExecuteReader();
 
-				//カラム名出力
-				string[] names = new string[rdr.FieldCount];
-				for (int i = 0; i < rdr.FieldCount; i++)
-					names[i] = rdr.GetName(i);
-				Console.WriteLine(string.Join("\t", names));
+		//		//カラム名出力
+		//		string[] names = new string[rdr.FieldCount];
+		//		for (int i = 0; i < rdr.FieldCount; i++)
+		//			names[i] = rdr.GetName(i);
+		//		Console.WriteLine(string.Join("\t", names));
 
-				//テーブル出力
-				while (rdr.Read())
-				{
-					string[] row = new string[rdr.FieldCount];
-					for (int i = 0; i < rdr.FieldCount; i++)
-						row[i] = rdr.GetString(i);
-					string si1 = rdr["MaxID"].ToString().Trim();
-					Console.WriteLine(string.Join("\t", row));
-				}
+		//		//テーブル出力
+		//		while (rdr.Read())
+		//		{
+		//			string[] row = new string[rdr.FieldCount];
+		//			for (int i = 0; i < rdr.FieldCount; i++)
+		//				row[i] = rdr.GetString(i);
+		//			string si1 = rdr["MaxID"].ToString().Trim();
+		//			Console.WriteLine(string.Join("\t", row));
+		//		}
 
-				bSt = rdr.Read();
-				if (bSt)
-				{
-					o_strItems = rdr.GetString(0);
-					string s1 = rdr[0].ToString();
-				}
-				bSt = rdr.Read();
-				if (bSt)
-				{
-					o_strItems = rdr.GetString(0);
-					string s1 = rdr[0].ToString();
-				}
-				rdr.Close();
-			}
-			catch (Exception ex)
-			{
-				Dbg.Utl.MessageBoxShow(ex.Message, "DB データ取得 エラー");
-				bSt = false;
-			}
-			return bSt;
-		}
+		//		bSt = rdr.Read();
+		//		if (bSt)
+		//		{
+		//			o_strItems = rdr.GetString(0);
+		//			string s1 = rdr[0].ToString();
+		//		}
+		//		bSt = rdr.Read();
+		//		if (bSt)
+		//		{
+		//			o_strItems = rdr.GetString(0);
+		//			string s1 = rdr[0].ToString();
+		//		}
+		//		rdr.Close();
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		Dbg.Utl.MessageBoxShow(ex.Message, "DB データ取得 エラー");
+		//		bSt = false;
+		//	}
+		//	return bSt;
+		//}
 	}
 }

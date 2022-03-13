@@ -219,10 +219,12 @@ namespace Kc
 									strSClassNameBf, strSClassURLBf, out nSClass);
         }
 
-		// 小分類の全商品の属性リストを取得しD/Bに書き込む
-		public static int importSClassProducts(
-			string i_strSClassID				// 小分類ID
-			)
+		/// <summary>
+		/// 小分類の全商品の属性リストを取得しD/Bに書き込む
+		/// </summary>
+		/// <param name="i_strSClassID">小分類ID</param>
+		/// <returns>ステイタス</returns>
+		public static int importSClassProducts( string i_strSClassID )
 		{
 			int irt = 0;
 			int ist = 0;
@@ -234,7 +236,7 @@ namespace Kc
 			string[] strAttrValueBf = new string[iszAttrValueBf];				// 小分類ページ商品の属性値
 			int[] iflgAttrValueBf = new int[iszAttrValueBf]; 					// 小分類ページ商品の属性先頭フラグ	1:商品属性の先頭 2:補助属性の先頭 3:補助属性サマリ(debug用)
 			int nAttrBf;														// 小分類ページ商品の属性数
-			int iszAttrValues = Const.z_nSyohinAttrNameMax;					// 商品の属性値リストサイズ
+			int iszAttrValues = Const.z_nSyohinAttrNameMax;						// 商品の属性値リストサイズ
 			string[] strAttrNames = new string[iszAttrValues];					// 商品の属性名リスト
 			string[] strAttrValues = new string[iszAttrValues];					// 商品の属性値リスト
 			int nAttrS;															// 商品の属性数
@@ -248,7 +250,7 @@ namespace Kc
 			string strSeihinSiyoURL;											// メーカー仕様表URL
 			string strPreReleaseURL;											// プレリリースURL
 
-			int iszProductPicts = Const.z_nSyohinZukeiMax;					// 商品の図形URL最大数
+			int iszProductPicts = Const.z_nSyohinZukeiMax;						// 商品の図形URL最大数
 			string[] strProductPictURLs = new string[iszProductPicts];			// 製品写真URL(主図形,サブ1図形,サブ2図形,･･･)
 			string[] strLSizeProductPictHPURLs = new string[iszProductPicts];	// フルスケール製品写真掲載ホームページのURL
 			int nProductPictURL;												// 製品写真数
@@ -2127,7 +2129,7 @@ namespace Kc
 			// 属性名マスタ
 			string[] strHdrAN = { "属性ID", "属性名"};
 			string[,] strItemANs = new string[Const.z_nAttrNameMax, strHdrAN.Length];		// 小分類内の属性名の[属性ID],[表示],[属性名],[表示属性名]のリスト 
-			int nItemAN;																		// 属性名数
+			int nItemAN;																	// 属性名数
 
 			string[] strAttrNms = { "注目", "売れ筋", "レビュー評価", "クチコミ件数"};
 			string[] stAttrIDs = new string[strAttrNms.Length];
@@ -2165,21 +2167,6 @@ namespace Kc
 				Mkdb.getSyohinIDofSClass(i_strSClassID, strSyohinID, iszSyohinID, out nSyohinID);
 				if (Dbg.Utl.CheckOverflow(nSyohinID >= iszSyohinID, "小分類内の商品数", "clrMovementAttrValue")) return -1;
 				// 小分類の全商品の変動項目([売れ筋],[レビュー評価],[口コミ件数])を0クリア 
-				//for (ic1 = 0; ic1 < nSyohinID; ic1++)
-				//{
-				//	string strCond = "商品ID=" + strSyohinID[ic1] + " AND (属性ID=" + stAttrIDs[0];
-				//	for (ic2 = 1; ic2 < nAttrID; ic2++)
-				//	{
-				//		// mySQLのデータを修正
-				//		strCond += (" OR 属性ID=" + stAttrIDs[ic2]);
-				//	}
-				//	strCond += ")";
-				//	if (Db.MySql.modifySingleCondRecordItems1D(Const.z_strAttributeValueTable, strHdrAT, strHdrAT.Length,
-				//											strCond, strItemAT) != 0)
-				//	{
-				//		Dbg.Utl.MessageBoxShow("データ修正エラー", "DBエラー");
-				//	}
-				//}
 				const int icadd = 20; 
 				for (ic1 = 0; ic1 < nSyohinID; ic1 += icadd)
 				{
@@ -2206,24 +2193,28 @@ namespace Kc
 			}
 			return 0;
 		}
-		// 属性名の[表示]フラグと表示属性名を保存する
+
+		/// <summary>
+		/// 属性名の[表示]フラグと表示属性名を保存する
+		/// </summary>
+		/// <param name="i_strSClassID">小分類ID</param>
+		/// <param name="i_strHdrAN">ヘッダー:  { "属性ID", "表示", "属性名", "表示属性名", "表示巾" }</param>
+		/// <param name="o_strItemANs">小分類内の属性名の[属性ID],[表示],[属性名],[表示属性名]のリスト
+		///								new string[Const.z_nSClassAttrNameMax, strHdrAN.Length] </param>
+		/// <param name="o_nItemAN">属性名数</param>
+		/// <returns></returns>
 		public static int saveAttrNameDispFlag(string i_strSClassID, string[] i_strHdrAN,
 											   string[,] o_strItemANs, out int o_nItemAN)
 		{
 			int ist;
 
-			// 属性名マスタ
-			// string[] strHdrAN = { "属性ID", "表示", "属性名", "表示属性名", "表示巾" };
-			// string[,] strItemANs = new string[Const.z_nSClassAttrNameMax, strHdrAN.Length];	// 小分類内の属性名の[属性ID],[表示],[属性名],[表示属性名]のリスト 
-			// int nItemAN;																			// 属性名数
-
 			// 小分類の[属性名]を取得
 			string strCond = "小分類ID=" + i_strSClassID;
 			ist = Db.MySql.getTableItems(Const.z_strAttributeNameTable, i_strHdrAN, i_strHdrAN.Length,
 										 strCond, "", o_strItemANs, out o_nItemAN);
-
 			return ist;
 		}
+
 		// 属性名の[表示]フラグと表示属性名を再設定する
 		public static int loadAttrNameDispFlag(string i_strSClassID, string[] i_strHdrAN,
 											   string[,] i_strItemANs, int i_nItemAN)

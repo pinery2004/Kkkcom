@@ -153,10 +153,12 @@ namespace Kc
 		private void btnHtml_Click(object sender, EventArgs e)
 		{
 			btnWriteTbl.Enabled = false;
-
+			
+			// ヘッダー表示
 			string strMsg = "商品データ, カテゴリ・分類取込み 開始";
-
 			Mkdb.DispLine1(strMsg);
+
+			// 取込開始小分類ID(SClassID)を取り込む
             string strFisrstSClassID = textBoxCtrlUrlFN.Text;
             if (strFisrstSClassID.Length > 0)
             {
@@ -170,6 +172,8 @@ namespace Kc
                     strFisrstSClassID = strFisrstSClassID.Substring(1, 4);
                 }
             }
+
+			// 商品取込み(指定取込み開始小分類ID以降のIDの商品を取り込む)
 			Syohin.ImportSyohin(strFisrstSClassID);
 
 			strMsg = "商品データ, カテゴリ・分類取込み 終了";

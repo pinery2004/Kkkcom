@@ -13,12 +13,20 @@ namespace Kc
 {
 	public partial class Syohin
 	{
+		/// <summary>
+		/// 商品を取込む
+		/// </summary>
+		/// <param name="strFirstSlassID">"":先頭から、"nnnn":取込み開始小分類ID</param>
+		/// <returns></returns>
 		public static int ImportSyohin(string strFirstSlassID)
 		{
 			int ist = 0;
+
+			// LogFile取込み開始を書き、(カテゴリ、大中小分類、または) 属性を取り込む
 			string strMsg = "";
             Mkdb.WriteLogFile("商品取込開始");
 
+			// チェックボックスの選択状況により(カテゴリ、大中小分類、または)属性を取り込む
             if (Form1.m_bChkCategory)							// カテゴリ
 			{
 				// カテゴリリストをD/Bに書き込む
@@ -54,7 +62,7 @@ namespace Kc
 				bool bDeleteSClassAttr = false;								// 小分類の全属性データを削除しない
 				bool bInheritDispFlg = false;								// 属性名の[表示]フラグを継承しない
 
-				// 全小分類の小分類IDと取込を取得する
+				// 全小分類の 小分類ID、取込、と小分類名 を取得する
 				string[] strHdr = { "小分類ID", "取込", "小分類名" };
 				string[,] strItems = new string[Kc.Const.z_nSClassMax, 3];		// 全小分類の[小分類ID],[取込],[小分類名]のリスト
 				int nSClass;													// 小分類数
@@ -62,6 +70,7 @@ namespace Kc
 
 				for (int ic = 0; ic < nSClass; ic++)
 				{
+					// 指定された開始小分類ID以降の[取込]が"1" の小分類を取込み対象とする
 					string strSClassID = strItems[ic, 0];
                     if (strFirstSlassID != "" && string.Compare(strSClassID, strFirstSlassID) < 0)
                     {
@@ -70,12 +79,14 @@ namespace Kc
 					string strSClassGetFlg = strItems[ic, 1];                   // [取込]
                     if (strSClassGetFlg != "1") continue;                       // 取込対象外はスキップ
 
+					// ログに取込む小分類IDを書き込む
 					Mkdb.m_strCurSClassID = strItems[ic, 0];					// 処理経過表示用 小分類ID
 					Mkdb.m_strCurSClassName = strItems[ic, 2];					// 処理経過表示用 小分類名
 
                     string strTrace = "〇商品取り込みクラス SClassID=" + Mkdb.m_strCurSClassID + " 小分類名=" + Mkdb.m_strCurSClassName;
                     Mkdb.WriteLogFile(strTrace);
                     Mkdb.FlushLogFile();
+
                     // [取込]が1である小分類の全商品の属性リストをD/Bに書き込む
                     // D/Bから小分類の商品を１件取得する
                     string[] strSyohinIDs = new string[1];

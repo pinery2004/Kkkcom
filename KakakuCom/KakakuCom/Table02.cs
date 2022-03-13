@@ -7,10 +7,13 @@ namespace HTML
 {
 	public partial class Table
 	{
-		// 小分類ページデータのテーブルから商品の属性名リストの取得
-		public static int getAttrName(			// tableのtag番号
-			string[] o_strAttrNames,			// 属性名
-			out int o_nAttrNames)				// 属性名数
+		/// <summary>
+		/// 小分類ページデータのテーブルから商品の属性名リストを取得
+		/// </summary>
+		/// <param name="o_strAttrNames">属性名</param>
+		/// <param name="o_nAttrNames">属性名数</param>
+		/// <returns>tableのtag番号</returns>
+		public static int getAttrName( string[] o_strAttrNames, out int o_nAttrNames)
 		{
 			int irt;
 			int iTagTableLn = 0;
@@ -477,11 +480,10 @@ namespace HTML
 			o_nSyohin = 0;
 			o_nAttr = 0;
 
-			// 属性名取得
+			// 小分類ページデータのテーブルから商品の属性名リストを取得
 			const int iszAttrNames = 500;
 			string[] strAttrNames = new string[iszAttrNames];
 			int nAttrNames;
-
 			HTML.Table.getAttrName(strAttrNames, out nAttrNames);
 
 			// 属性名出力
@@ -489,7 +491,6 @@ namespace HTML
 			{
 				for (int iz = 0; iz < nAttrNames; iz++)
 				{
-					//				Mkdb.DispLine2("[" + (iz + 1) + "] : {" + strAttrNames[iz] + "}");
 					Kc.Mkdb.DispLine2("\"" + strAttrNames[iz] + "\",");
 				}
 			}
